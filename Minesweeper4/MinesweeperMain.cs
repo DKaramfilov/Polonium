@@ -1,210 +1,179 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 // testvano e - ba4ka, ne pipaj!!!!!!!
 
-namespace mini4ki
+namespace Minesweeper
 {
     public class MinesweeperMain
     {
-        public class ScoreRecord
+        static void Main(string[] args) //moved const on top, 
         {
-            string personName;
-            int scorePoints;
+            const int MaxRevealedCells = 35;
+            const int BoardRows = 5;//added constant to manage "Magic" numbers
+            const int BoardCols = 10;//added constant to manage "Magic" numbers
+            const int MinesCount = 15;//same
 
-            public string PersonName
-            {
-                get { return personName; }
-                set { personName = value; }
-            }
-            public int ScorePoints
-            {
-                get { return scorePoints; 
-				
-				
-				}
-                set { scorePoints = value; }
-            }
-
-            public ScoreRecord() { }
-
-            public ScoreRecord(string personName, int points)
-            {
-                this.personName = personName;
-                this.scorePoints = points;
-            }
-
-        }
-
-        static void Main(string[] args)
-        {
             string selectedCommand = string.Empty;
-            char[,] playground = CreateWhiteBoard();
-            char[,] boomBoard = CreateBombBoard();
-            int counter = 0;
-            bool boomed = false;
-
-
-            List<ScoreRecord> champions = new List<ScoreRecord>(6);
+            char[,] whiteBoard = CreateWhiteBoard(BoardRows, BoardCols);
+            char[,] minesBoard = CreateMinesBoard(BoardRows, BoardCols,MinesCount);
+            char[] separators = new char[]{',', ' ', ';', '/', '\\'}; //added separators for command separating
+            int movesCounter = 0;
             int rowIndex = 0;
-
-
-
-            int columnIndex = 0;
-            bool welcomeFlag = true;
-            const int MAX_REVEALED_CELLS = 35;
-            bool flag = false;
+            int colIndex = 0;
+            bool newGame = true; // rename from ??welcome??
+            bool maxRevealedCellsReached = false;// rename from "flag"
+            bool mineHasBlown = false; // rename for consistency
+            List<ScoreRecord> champions = new List<ScoreRecord>(6);
             
             do
             {
-                if (welcomeFlag)
+                if (newGame)
                 {
+                    //Console.Clear();
                     Console.WriteLine("Welcome to the game “Minesweeper”. Try to reveal all cells without mines." +
                     " Use 'top' to view the scoreboard, 'restart' to start a new game and 'exit' to quit the game.");
-                    PrintBoard(playground);
-                    welcomeFlag = false;
+                    PrintBoard(whiteBoard);
+                    newGame = false;
                 }
+
                 Console.Write("Enter row and column: ");
                 selectedCommand = Console.ReadLine().Trim();
-                if (selectedCommand.Length >= 3)
-                {
-                    if (int.TryParse(selectedCommand[0].ToString(), out rowIndex) &&
-                    int.TryParse(selectedCommand[2].ToString(), out columnIndex) &&
-                        rowIndex <= playground.GetLength(0) && columnIndex <= playground.GetLength(1))
+
+                //refactored to use try catch block and add bool variables for easier understanding and to 
+                //use separators chars for separating row and col of command
+                if (selectedCommand.Length >= 3)  {
+                    try
                     {
+                        string[] commandSplit = selectedCommand.Split(separators, StringSplitOptions.RemoveEmptyEntries);
+                        rowIndex = int.Parse(commandSplit[0]);
+                        colIndex = int.Parse(commandSplit[1]);
 
+                        bool validRowIndex = IsInsideBoard(rowIndex, BoardRows);
+                        bool validColIndex = IsInsideBoard(colIndex, BoardCols);
 
-                        selectedCommand = "turn";
+                        if (validRowIndex && validColIndex)
+                        {
+                            selectedCommand = "turn";
+                        }
+                        
+                    }
+                    catch(FormatException ex)//explained why not handled
+                    {
+                        //It will be handled as an Illegal move in swich below
                     }
                 }
+
                 switch (selectedCommand)
                 {
-                    case "top":
-                        PrintScoreBoard(champions);
-                        break;
-                    case "restart":
-                        playground = CreateWhiteBoard();
-                        boomBoard = CreateBombBoard();
-                        PrintBoard(playground);
-                        boomed = false;
-                        welcomeFlag = false;
-                        break;
-                    case "exit":
-                        Console.WriteLine("Good bye!");
-                        break;
-                    case "turn":
-                        if (boomBoard[rowIndex, columnIndex] != '*')
+                    case "turn": //put turn on top of swich-case because it's most common case
                         {
-                            if (boomBoard[rowIndex, columnIndex] == '-')
+                            if (minesBoard[rowIndex, colIndex] != '*')
                             {
-                                MakeAMove(playground, boomBoard, rowIndex, columnIndex);
-                                counter++;
-                            }
-                            if (MAX_REVEALED_CELLS == counter)
-                            {
-                                flag = true;
+                                if (minesBoard[rowIndex, colIndex] == '-')
+                                {
+                                    RevealCell(whiteBoard, minesBoard, rowIndex, colIndex);
+                                    movesCounter++;
+                                }
+
+                                if (MaxRevealedCells == movesCounter)
+                                {
+                                    maxRevealedCellsReached = true;
+                                }
+                                else
+                                {
+                                    PrintBoard(whiteBoard);
+                                }
                             }
                             else
                             {
-                                PrintBoard(playground);
+                                mineHasBlown = true;
                             }
+
+                            break;
                         }
-                        else
+
+                    case "top":
                         {
-                            boomed = true;
-
-
+                            PrintScoreBoard(champions);
+                            break;
                         }
-                        break;
-                    default:
-                        Console.WriteLine("\nIllegal move!\n");
-                        break;
-                }
-                if (boomed)
-                {
-                    PrintBoard(boomBoard);
-                    Console.Write("\nBooooom! You were killed by a mine. You revealed {0} cells without mines."+
-                        "Please enter your name for the top scoreboard: ",counter);
-                    string personName = Console.ReadLine();
-                    ScoreRecord record = new ScoreRecord(personName, counter);
-                    if (champions.Count <5)
-                    {
-                        champions.Add(record);
 
-
-                    }
-                    else
-                    {
-                        for (int i = 0; i < champions.Count; i++)
+                    case "restart":
                         {
-                            if (champions[i].ScorePoints < record.ScorePoints)
-                            {
-                                champions.Insert(i, record);
-                                champions.RemoveAt(champions.Count-1);
-                                break;
-                            }
+                            whiteBoard = CreateWhiteBoard(BoardRows, BoardCols);//(DRY) maybe here we should have an Initilize()  method but for now left it like it is 
+                            minesBoard = CreateMinesBoard(BoardRows, BoardCols, MinesCount);
+                            PrintBoard(whiteBoard);
+                            mineHasBlown = false;
+                            newGame = false;
+                            break;
                         }
-                    }
-                    champions.Sort(delegate(ScoreRecord r1, ScoreRecord r2)
-                    { return r2.PersonName.CompareTo(r1.PersonName); });
-                    champions.Sort(delegate(ScoreRecord r1,ScoreRecord r2)
-                    {return r2.ScorePoints.CompareTo(r1.ScorePoints);  });
-                    PrintScoreBoard(champions);
+
+                    case "exit":
+                        {
+                            Console.WriteLine("Good bye!");
+                            break;
+                        }
+
                     
-					
-					playground = CreateWhiteBoard();
-                    boomBoard = CreateBombBoard();
-                    counter = 0;
-                    boomed = false;
-                    welcomeFlag = true;
+                    default:
+                        {
+                            Console.WriteLine("\nIllegal move!\n");
+                            break;
+                        }
                 }
-                if (flag)
-                {
-                    Console.WriteLine("\nYou revealed all 35 cells.");
-                    PrintBoard(boomBoard);
-                    Console.WriteLine("Please enter your name for the top scoreboard: ");
-                    string personName = Console.ReadLine();
-                    ScoreRecord record = new ScoreRecord(personName, counter);
-                    champions.Add(record);
-                    PrintScoreBoard(champions);
-                    playground = CreateWhiteBoard();
-                    boomBoard = CreateBombBoard();
-                    counter = 0;
-                    flag = false;
-                    welcomeFlag = true;
-                }
-            } 
-            while (selectedCommand != "exit");
 
+                if (mineHasBlown || maxRevealedCellsReached)//added one check in order to move 7 repeating lines out of next two if-s
+                {
+                    if (mineHasBlown)
+                    {
+                        PrintBoard(minesBoard);
+                        Console.Write("\nBooooom! You were killed by a mine. You revealed {0} cells without mines." +
+                            "\nPlease enter your name for the top scoreboard: ", movesCounter);
+                    }
+
+                    if (maxRevealedCellsReached)
+                    {
+                        Console.WriteLine("\nYou revealed all 35 cells.");
+                        PrintBoard(minesBoard);
+                        Console.WriteLine("Please enter your name for the top scoreboard: ");
+                    }
+
+                    string personName = Console.ReadLine();//7 lines moved outside of two consecutive if-s
+                    AddChampionRecord(champions, personName, movesCounter);
+                    PrintScoreBoard(champions);
+
+                    whiteBoard = CreateWhiteBoard(BoardRows, BoardCols);
+                    minesBoard = CreateMinesBoard(BoardRows, BoardCols, MinesCount);
+                    movesCounter = 0;
+                    mineHasBlown = false;
+                    newGame = true;
+                }
+            }while (selectedCommand != "exit");
 
             Console.WriteLine("Made by Pavlin Panev 2010 - all rights reserved!");
             Console.WriteLine("Press any key to exit.");
             Console.Read();
         }
-        private static void PrintScoreBoard(List<ScoreRecord> topRecords)
+
+        private static bool IsInsideBoard(int index, int length)
         {
-            Console.WriteLine("\nScoreboard:");
-            if (topRecords.Count > 0)
+            bool isInside = true;
+            if (index < 0 || index >= length)
             {
-                for (int i = 0; i < topRecords.Count; i++)
-                {
-                    Console.WriteLine("{0}. {1} --> {2} cells", i + 1, topRecords[i].PersonName, topRecords[i].ScorePoints);
-                }
-                Console.WriteLine();
+                isInside = false;
             }
-            else
-            {
-                Console.WriteLine("No records to display!\n");
-            }
-        }
-        private static void MakeAMove(char[,] board,char[,] boomBoard, int rowIndex, int columnIndex)
+
+            return isInside;
+        }//added method for checking if index is inside board
+
+        private static void RevealCell(char[,] board,char[,] boomBoard, int rowIndex, int columnIndex)
         {
-            char howManyBombs = CalculateHowManyBombs(boomBoard, rowIndex, columnIndex);
+            char howManyBombs = CountMinesAroundCell(boomBoard, rowIndex, columnIndex);
             boomBoard[rowIndex, columnIndex] = howManyBombs;
             board[rowIndex, columnIndex] = howManyBombs;
-        }
+        }//renamed method from.....?
+
         private static void PrintBoard(char[,] board)
         {
             int boardRows = board.GetLength(0);
@@ -223,10 +192,64 @@ namespace mini4ki
             }
             Console.WriteLine("   ---------------------\n");
         }
-        private static char[,] CreateWhiteBoard()
+
+        //added a region for better placement of methods connected to scorekeeping
+        #region Champions' record adding and printing 
+
+        private static void AddChampionRecord(List<ScoreRecord> champions, string personName, int movesCount)
         {
-            int boardRows = 5;
-            int boardColumns = 10;
+            ScoreRecord newRecord = new ScoreRecord(personName, movesCount);
+            if (champions.Count < 5)
+            {
+                champions.Add(newRecord);
+            }
+            else
+            {
+                for (int i = 0; i < champions.Count; i++)
+                {
+                    if (champions[i].ScorePoints < newRecord.ScorePoints)
+                    {
+                        champions.Insert(i, newRecord);
+                        champions.RemoveAt(champions.Count - 1);
+                        break;
+                    }
+                }
+            }
+
+            SortChampions(champions);
+        }
+
+        private static void SortChampions(List<ScoreRecord> champions)
+        {
+            champions.Sort((scoreRecord1, scoreRecord2) => scoreRecord2.PersonName.CompareTo(scoreRecord1.PersonName));
+            champions.Sort((scoreRecord1, scoreRecord2) => scoreRecord2.ScorePoints.CompareTo(scoreRecord1.ScorePoints));
+        }
+
+        private static void PrintScoreBoard(List<ScoreRecord> topRecords)
+        {
+            Console.WriteLine("\nScoreboard:");
+            if (topRecords.Count > 0)
+            {
+                for (int i = 0; i < topRecords.Count; i++)
+                {
+                    Console.WriteLine("{0}. {1} --> {2} cells", i + 1, topRecords[i].PersonName, topRecords[i].ScorePoints);
+                }
+                Console.WriteLine();
+            }
+            else
+            {
+                Console.WriteLine("No records to display!\n");
+            }
+        }
+        #endregion
+
+        //added a region for white- and mines-boards generating 
+        #region  WhiteBoard and MinesBoard Generating and Calculating
+
+        private static char[,] CreateWhiteBoard(int rows, int cols)
+        {
+            int boardRows = rows;
+            int boardColumns = cols;
             char[,] board = new char[boardRows, boardColumns];
             for (int i = 0; i < boardRows; i++)
             {
@@ -237,15 +260,12 @@ namespace mini4ki
             }
 
             return board;
-
-
-
         }
 
-        private static char[,] CreateBombBoard()
+        private static char[,] CreateMinesBoard(int rows, int cols, int minesCount)
         {
-            int boardRows = 5;
-            int boardColumns = 10;
+            int boardRows = rows;
+            int boardColumns = cols;
             char[,] board = new char[boardRows, boardColumns];
 
             for (int i = 0; i < boardRows; i++)
@@ -253,22 +273,19 @@ namespace mini4ki
                 for (int j = 0; j < boardColumns; j++)
                 {
                     board[i, j] = '-';
-
-
-
                 }
             }
 
-            List<int> randomNumbers = new List<int>();
-            while (randomNumbers.Count < 15)
-            {
-                Random random = new Random();
-                int randomNumber = random.Next(50);
-                if (!randomNumbers.Contains(randomNumber))
-                {
-                    randomNumbers.Add(randomNumber);
-                }
-            }
+            List<int> randomNumbers = GenerateRandomNumbers(minesCount);
+
+            PlaceMinesRandom(board, randomNumbers);
+
+            return board;
+        }
+
+        private static void PlaceMinesRandom(char[,] board, List<int> randomNumbers)//added method for easier reading
+        {
+            int boardColumns = board.GetLength(1);
 
             foreach (int number in randomNumbers)
             {
@@ -279,19 +296,33 @@ namespace mini4ki
                     row--;
                     column = boardColumns;
                 }
-
-
                 else
                 {
                     column++;
                 }
-                board[row,column-1] = '*';
+
+                board[row, column - 1] = '*';
             }
 
-            return board;
         }
 
-        private static void CalculateBombBoard(char[,] board)
+        private static List<int> GenerateRandomNumbers(int minesCount)//added method for easier reading
+        {
+            Random random = new Random(); // moved outside of while loop
+            List<int> randomNumbers = new List<int>();
+            while (randomNumbers.Count < minesCount)
+            {
+                int randomNumber = random.Next(50);
+                if (!randomNumbers.Contains(randomNumber))
+                {
+                    randomNumbers.Add(randomNumber);
+                }
+            }
+
+            return randomNumbers;
+        }
+
+        private static void SetMinesNumbersOnBoard(char[,] board) // renamed ,method to explain
         {
             int boardRows = board.GetLength(0);
             int boardColumns = board.GetLength(1);
@@ -302,68 +333,92 @@ namespace mini4ki
                 {
                     if (board[i,j] != '*')
                     {
-                        char number = CalculateHowManyBombs(board, i, j);
-                        board[i, j] = number;
+                        char minesCount = CountMinesAroundCell(board, i, j);
+                        board[i, j] = minesCount;
                     }
                 }
-
-
             }
         }
 
-        private static char CalculateHowManyBombs(char[,] board, int rowIndex, int columnIndex)
+        /// <summary>
+        /// Counts mines around cell and returns their count
+        /// </summary>
+        /// <param name="board"></param>
+        /// <param name="rowIndex"></param>
+        /// <param name="columnIndex"></param>
+        /// <returns></returns>
+        private static char CountMinesAroundCell(char[,] board, int rowIndex, int columnIndex) //renamed method to explain
         {
-            int counted = 0;
+            int minesCount = 0;
             int boardRows = board.GetLength(0);
             int boardColumns = board.GetLength(1);
 
             if (rowIndex - 1 >= 0)
             {
                 if (board[rowIndex - 1, columnIndex] == '*')
-                { counted++; }
+                { 
+                    minesCount++; 
+                }
             }
+
             if (rowIndex + 1 < boardRows)
             {
                 if (board[rowIndex + 1, columnIndex] == '*')
-                { counted++; }
-
-
-
+                { 
+                    minesCount++; 
+                }
             }
+
             if (columnIndex - 1 >= 0)
             {
                 if (board[rowIndex, columnIndex - 1] == '*')
-                { counted++; }
+                { 
+                    minesCount++; 
+                }
             }
+
             if (columnIndex + 1 < boardColumns)
             {
                 if (board[rowIndex, columnIndex + 1] == '*')
-                { counted++; }
+                { 
+                    minesCount++; 
+                }
             }
+
             if ((rowIndex - 1 >= 0) && (columnIndex - 1 >= 0))
             {
                 if (board[rowIndex - 1, columnIndex - 1] == '*')
-                { counted++; }
+                { 
+                    minesCount++; 
+                }
             }
+
             if ((rowIndex - 1 >= 0) && (columnIndex + 1 < boardColumns))
             {
                 if (board[rowIndex - 1, columnIndex + 1] == '*')
-                { counted++; }
+                { 
+                    minesCount++; 
+                }
             }
+
             if ((rowIndex + 1 < boardRows) && (columnIndex - 1 >= 0))
             {
                 if (board[rowIndex + 1, columnIndex - 1] == '*')
-                { counted++; }
+                { 
+                    minesCount++; 
+                }
             }
+
             if ((rowIndex + 1 < boardRows) && (columnIndex + 1 < boardColumns))
             {
                 if (board[rowIndex + 1, columnIndex + 1] == '*')
-                { counted++; }
-
-
+                { 
+                    minesCount++; 
+                }
             }
-            return char.Parse(counted.ToString());
-        }
 
+            return char.Parse(minesCount.ToString());
+        }
+        #endregion
     }
 }
