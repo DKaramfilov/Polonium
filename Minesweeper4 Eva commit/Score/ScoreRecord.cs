@@ -10,15 +10,12 @@ namespace Minesweeper
         private string personName;
         private int scorePoints;
 
-        public ScoreRecord()
-        {
-        }
-
         public ScoreRecord(string personName, int points)
         {
-            this.personName = personName;
-            this.scorePoints = points;
+            this.PersonName = personName;
+            this.ScorePoints = points;
         }
+
         /// <value>PersonName accesses the value of the personName data member</value>
        
         public string PersonName
@@ -29,9 +26,14 @@ namespace Minesweeper
             }
             set
             {
+                if (value == null || value == string.Empty)
+                {
+                    throw new ArgumentNullException("Person name connot be null or empty");
+                }
                 personName = value;
             }
         }
+
         /// <value>ScorePoints accesses the value of the scorePoints data member</value>
        
         public int ScorePoints
@@ -42,6 +44,10 @@ namespace Minesweeper
             }
             set
             {
+                if (value < 0)
+                {
+                    throw new ArgumentException("Person score connot be negative");
+                }
                 scorePoints = value;
             }
         }
