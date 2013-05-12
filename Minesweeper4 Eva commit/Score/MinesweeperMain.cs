@@ -9,7 +9,7 @@ namespace Minesweeper
     /// </summary>
     public class MinesweeperMain
     {
-        static void Main(string[] args)
+        public static void Main(string[] args)
         {
             ///<remarks>The added constants help with managing the "Magic numbers"</remarks>
             const int MaxRevealedCells = 35;
@@ -177,7 +177,7 @@ namespace Minesweeper
         /// <param name="index">Cell on the game board</param>
         /// <param name="length">Indicates the length of the game board</param>
         /// <returns>Index that indicates if the next move is on the game board</returns>
-        private static bool IsInsideBoard(int index, int length)
+        internal static bool IsInsideBoard(int index, int length)
         {
             bool isInside = true;
             if (index < 0 || index >= length)
@@ -195,7 +195,7 @@ namespace Minesweeper
         /// <param name="boomBoard">Placed mines</param>
         /// <param name="rowIndex">Row index</param>
         /// <param name="columnIndex">Column index</param>
-        private static void RevealCell(char[,] board, char[,] boomBoard, int rowIndex, int columnIndex)
+        internal static void RevealCell(char[,] board, char[,] boomBoard, int rowIndex, int columnIndex)
         {
             char howManyBombs = CountMinesAroundCell(boomBoard, rowIndex, columnIndex);
             boomBoard[rowIndex, columnIndex] = howManyBombs;
@@ -206,7 +206,7 @@ namespace Minesweeper
         /// Method that prints the game board
         /// </summary>
         /// <param name="board">Char array that constructs the game board</param>
-        private static void PrintBoard(char[,] board)
+        internal static void PrintBoard(char[,] board)
         {
             int boardRows = board.GetLength(0);
             int boardColumns = board.GetLength(1);
@@ -299,7 +299,7 @@ namespace Minesweeper
         /// <param name="rows">Number of rows</param>
         /// <param name="cols">Number of columns</param>
         /// <returns>Char array as a game board</returns>
-        private static char[,] CreateWhiteBoard(int rows, int cols)
+        internal static char[,] CreateWhiteBoard(int rows, int cols)
         {
             int boardRows = rows;
             int boardColumns = cols;
@@ -321,7 +321,7 @@ namespace Minesweeper
         /// <param name="cols">Number of columns</param>
         /// <param name="minesCount">Number of mines</param>
         /// <returns>Char array as a game board with mines</returns>
-        private static char[,] CreateMinesBoard(int rows, int cols, int minesCount)
+        internal static char[,] CreateMinesBoard(int rows, int cols, int minesCount)
         {
             int boardRows = rows;
             int boardColumns = cols;
@@ -346,7 +346,7 @@ namespace Minesweeper
         /// </summary>
         /// <param name="board">Empty game board</param>
         /// <param name="randomNumbers">List of random numbers</param>
-        private static void PlaceMinesRandom(char[,] board, List<int> randomNumbers)
+        internal static void PlaceMinesRandom(char[,] board, List<int> randomNumbers)
         {
             int boardColumns = board.GetLength(1);
 
@@ -373,7 +373,7 @@ namespace Minesweeper
         /// </summary>
         /// <param name="minesCount">Number of mines to be generated</param>
         /// <returns>Randomly generated mines</returns>
-        private static List<int> GenerateRandomNumbers(int minesCount)
+        internal static List<int> GenerateRandomNumbers(int minesCount)
         {
             Random random = new Random();
             List<int> randomNumbers = new List<int>();
@@ -392,7 +392,7 @@ namespace Minesweeper
         /// Method that places the mines on the game board
         /// </summary>
         /// <param name="board">Empty game board</param>
-        private static void SetMinesNumbersOnBoard(char[,] board)
+        internal static void SetMinesNumbersOnBoard(char[,] board)
         {
             int boardRows = board.GetLength(0);
             int boardColumns = board.GetLength(1);
@@ -417,7 +417,7 @@ namespace Minesweeper
         /// <param name="rowIndex">Row index of the cell</param>
         /// <param name="columnIndex">Column index of the cell</param>
         /// <returns>Number of mines in neighbouring cells</returns>
-        private static char CountMinesAroundCell(char[,] board, int rowIndex, int columnIndex)
+        internal static char CountMinesAroundCell(char[,] board, int rowIndex, int columnIndex)
         {
             int minesCount = 0;
             int boardRows = board.GetLength(0);
