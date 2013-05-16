@@ -9,7 +9,11 @@ namespace Minesweeper
     {
         private string personName;
         private int scorePoints;
-
+        /// <summary>
+        /// Keeps record of <paramref name="personName"/>
+        /// </summary>
+        /// <param name="personName">Name of record holder</param>
+        /// <param name="points">The points</param>
         public ScoreRecord(string personName, int points)
         {
             this.PersonName = personName;

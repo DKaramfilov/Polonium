@@ -1,0 +1,37 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<HelpKI>
+  <HelpKINode Title="Main method" Url="html/43e77bf9-63e5-5926-cfa9-8a41b24ef3c7.htm" />
+  <HelpKINode Title="Minesweeper namespace" Url="html/c3d96d59-3268-d0d4-afbc-d3fb8fb789d1.htm" />
+  <HelpKINode Title="Minesweeper.MinesweeperMain class">
+    <HelpKINode Title="MinesweeperMain Class" Url="html/6afde9c5-3b35-bd24-9bc9-41674cc5070b.htm" />
+    <HelpKINode Title="MinesweeperMain Members" Url="html/2bae90d8-4113-0caf-9104-a3e9e1d5e6a3.htm" />
+  </HelpKINode>
+  <HelpKINode Title="Minesweeper.ScoreRecord class">
+    <HelpKINode Title="ScoreRecord Class" Url="html/74734f4e-b79b-5dd3-4e78-b130a299f344.htm" />
+    <HelpKINode Title="ScoreRecord Members" Url="html/502376ed-0cd5-5b26-5e6a-c7f4a4753b07.htm" />
+  </HelpKINode>
+  <HelpKINode Title="MinesweeperMain class">
+    <HelpKINode Title="MinesweeperMain Class" Url="html/6afde9c5-3b35-bd24-9bc9-41674cc5070b.htm" />
+    <HelpKINode Title="MinesweeperMain Members" Url="html/2bae90d8-4113-0caf-9104-a3e9e1d5e6a3.htm" />
+    <HelpKINode Title="about MinesweeperMain class" Url="html/6afde9c5-3b35-bd24-9bc9-41674cc5070b.htm" />
+    <HelpKINode Title="all members" Url="html/2bae90d8-4113-0caf-9104-a3e9e1d5e6a3.htm" />
+    <HelpKINode Title="constructor" Url="html/a24a0cd1-c6b6-a545-3c11-c8ad5e65b169.htm" />
+    <HelpKINode Title="methods" Url="html/aa25fd44-b6fe-51e4-d178-6f74f4ca20fb.htm" />
+  </HelpKINode>
+  <HelpKINode Title="MinesweeperMain.Main method" Url="html/43e77bf9-63e5-5926-cfa9-8a41b24ef3c7.htm" />
+  <HelpKINode Title="MinesweeperMain.MinesweeperMain constructor" Url="html/a24a0cd1-c6b6-a545-3c11-c8ad5e65b169.htm" />
+  <HelpKINode Title="PersonName property" Url="html/ab73b52b-828c-f19b-8b49-3d81a04f3df0.htm" />
+  <HelpKINode Title="ScorePoints property" Url="html/6ba2bb7c-c4b1-7399-73d1-4b938a71ba97.htm" />
+  <HelpKINode Title="ScoreRecord class">
+    <HelpKINode Title="ScoreRecord Class" Url="html/74734f4e-b79b-5dd3-4e78-b130a299f344.htm" />
+    <HelpKINode Title="ScoreRecord Members" Url="html/502376ed-0cd5-5b26-5e6a-c7f4a4753b07.htm" />
+    <HelpKINode Title="about ScoreRecord class" Url="html/74734f4e-b79b-5dd3-4e78-b130a299f344.htm" />
+    <HelpKINode Title="all members" Url="html/502376ed-0cd5-5b26-5e6a-c7f4a4753b07.htm" />
+    <HelpKINode Title="constructor" Url="html/9b7ae9ac-1c93-6e3e-3409-e0e7a1eda549.htm" />
+    <HelpKINode Title="methods" Url="html/4d939f31-03f0-96d2-a087-69fc7c87b42d.htm" />
+    <HelpKINode Title="properties" Url="html/18aa198f-a949-1137-db38-431018f43deb.htm" />
+  </HelpKINode>
+  <HelpKINode Title="ScoreRecord.PersonName property" Url="html/ab73b52b-828c-f19b-8b49-3d81a04f3df0.htm" />
+  <HelpKINode Title="ScoreRecord.ScorePoints property" Url="html/6ba2bb7c-c4b1-7399-73d1-4b938a71ba97.htm" />
+  <HelpKINode Title="ScoreRecord.ScoreRecord constructor" Url="html/9b7ae9ac-1c93-6e3e-3409-e0e7a1eda549.htm" />
+</HelpKI>

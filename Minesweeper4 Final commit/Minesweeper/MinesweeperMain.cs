@@ -10,9 +10,12 @@ namespace Minesweeper
     /// </summary>
     public class MinesweeperMain
     {
+        /// <summary>
+        /// Entry point for minesweeper game.
+        /// </summary>
+        /// <param name="args"></param>
         public static void Main(string[] args)
-        {
-            ///<remarks>The added constants help with managing the "Magic numbers"</remarks>
+        {            
             const int MaxRevealedCells = 35;
             const int BoardRows = 5;
             const int BoardCols = 10;
@@ -44,11 +47,12 @@ namespace Minesweeper
                 selectedCommand = Console.ReadLine().Trim();
                 var commandSplit = selectedCommand.Split(separators, StringSplitOptions.RemoveEmptyEntries);
                 if (commandSplit.Length > 1)
+  
                 {
                     rowIndex = int.Parse(commandSplit[0]);
                     colIndex = int.Parse(commandSplit[1]);
-
-                    bool validRowIndex = IsInsideBoard(rowIndex, BoardRows);
+                  bool validRowIndex = IsInsideBoard(rowIndex, BoardRows);
+  
                     bool validColIndex = IsInsideBoard(colIndex, BoardCols);
 
                     if (validRowIndex && validColIndex)
@@ -59,20 +63,17 @@ namespace Minesweeper
 
                 switch (selectedCommand)
                 {
-                    ///<remarks>
-                    ///"Turn" is on top since it's the most common case
-                    ///</remarks>
                     case "turn":
-                        {
-                            if (minesBoard[rowIndex, colIndex] != '*')
+                        {                          if (minesBoard[rowIndex, colIndex] != '*')
+  
                             {
                                 if (minesBoard[rowIndex, colIndex] == '-')
                                 {
                                     RevealCell(whiteBoard, minesBoard, rowIndex, colIndex);
                                     movesCounter++;
                                 }
-
-                                if (MaxRevealedCells == movesCounter)
+                              if (MaxRevealedCells == movesCounter)
+  
                                 {
                                     maxRevealedCellsReached = true;
                                 }
@@ -98,7 +99,8 @@ namespace Minesweeper
                     case "restart":
                         {
                             whiteBoard = CreateWhiteBoard(BoardRows, BoardCols);
-                            minesBoard = CreateMinesBoard(BoardRows, BoardCols, MinesCount);
+                         minesBoard = CreateMinesBoard(BoardRows, BoardCols, MinesCount);
+  
                             PrintBoard(whiteBoard);
                             mineHasBlown = false;
                             newGame = false;
@@ -124,38 +126,38 @@ namespace Minesweeper
                     if (mineHasBlown)
                     {
                         PrintBoard(minesBoard);
-                        Console.Write("\nBooooom! You were killed by a mine. You revealed {0} cells without mines." +
-                            "\nPlease enter your name for the top scoreboard: ", movesCounter);
+                        Console.Write("\nBooooom! You were killed by a mine. You revealed {0} cells without mines." +                          "\nPlease enter your name for the top scoreboard: ", movesCounter);
+  
                     }
 
                     if (maxRevealedCellsReached)
-                    {
-                        Console.WriteLine("\nYou revealed all 35 cells.");
-                        PrintBoard(minesBoard);
-                        Console.WriteLine("Please enter your name for the top scoreboard: ");
+                    {                      Console.WriteLine("\nYou revealed all 35 cells.");
+  
+                        PrintBoard(minesBoard);                      Console.WriteLine("Please enter your name for the top scoreboard: ");
+  
                     }
 
                     string personName = Console.ReadLine();
                     AddChampionRecord(champions, personName, movesCounter);
                     PrintScoreBoard(champions);
 
-                    whiteBoard = CreateWhiteBoard(BoardRows, BoardCols);
-                    minesBoard = CreateMinesBoard(BoardRows, BoardCols, MinesCount);
+                    whiteBoard = CreateWhiteBoard(BoardRows, BoardCols);                  minesBoard = CreateMinesBoard(BoardRows, BoardCols, MinesCount);
+  
                     movesCounter = 0;
                     mineHasBlown = false;
                     newGame = true;
                 }
             }while (selectedCommand != "exit");
-
-            Console.WriteLine("Made by Pavlin Panev 2010 - all rights reserved!");
+          Console.WriteLine("Made by Pavlin Panev 2010 - all rights reserved!");
+  
             Console.WriteLine("Press any key to exit.");
             Console.Read();
         }
         /// <summary>
         /// Method that indicates if the index is currently within the boundaries of the game board
         /// </summary>
-        /// <param name="index">Cell on the game board</param>
-        /// <param name="length">Indicates the length of the game board</param>
+        /// <param name="index">Cell on the game board</param>      /// <param name="length">Indicates the length of the game board</param>
+  
         /// <returns>Index that indicates if the next move is on the game board</returns>
         internal static bool IsInsideBoard(int index, int length)
         {
@@ -168,16 +170,16 @@ namespace Minesweeper
             return isInside;
         }
 
-        /// <summary>
-        /// Method that reveals the whole game board after end of game
+        /// <summary>      /// Method that reveals the whole game board after end of game
+  
         /// </summary>
         /// <param name="board">Current game board</param>
         /// <param name="boomBoard">Placed mines</param>
         /// <param name="rowIndex">Row index</param>
         /// <param name="columnIndex">Column index</param>
         internal static void RevealCell(char[,] board, char[,] boomBoard, int rowIndex, int columnIndex)
-        {
-            char howManyBombs = CountMinesAroundCell(boomBoard, rowIndex, columnIndex);
+        {          char howManyBombs = CountMinesAroundCell(boomBoard, rowIndex, columnIndex);
+  
             boomBoard[rowIndex, columnIndex] = howManyBombs;
             board[rowIndex, columnIndex] = howManyBombs;
         }
@@ -197,7 +199,7 @@ namespace Minesweeper
             for (int i = 0; i < boardRows; i++)
             {
                 result.AppendFormat("{0} | ", i);
-               
+
                 for (int j = 0; j < boardColumns; j++)
                 {
                     result.AppendFormat(string.Format("{0} ", board[i, j]));
@@ -209,15 +211,13 @@ namespace Minesweeper
             Console.Write(result.ToString());
             return result.ToString();
         }
-        /// <summary>
-        /// Scorekeeping methods region
-        /// </summary>
+
         #region Champions' record adding and printing
 
         /// <summary>
         /// Method that adds the champion's score record to the scoreboard
-        /// </summary>
-        /// <param name="champions">List containing the names of the players</param>
+        /// </summary>      /// <param name="champions">List containing the names of the players</param>
+  
         /// <param name="personName">A player's name</param>
         /// <param name="movesCount">Number of moves made</param>
         private static void AddChampionRecord(List<ScoreRecord> champions, string personName, int movesCount)
@@ -244,18 +244,18 @@ namespace Minesweeper
         }
         /// <summary>
         /// Method that sorts the players by their score results
-        /// </summary>
-        /// <param name="champions">List containing the names of the players</param>
+        /// </summary>      /// <param name="champions">List containing the names of the players</param>
+  
 
         internal static void SortChampions(List<ScoreRecord> champions)
-        {
-            champions.Sort((scoreRecord1, scoreRecord2) => scoreRecord2.PersonName.CompareTo(scoreRecord1.PersonName));
-            champions.Sort((scoreRecord1, scoreRecord2) => scoreRecord2.ScorePoints.CompareTo(scoreRecord1.ScorePoints));
+        {          champions.Sort((scoreRecord1, scoreRecord2) => scoreRecord2.PersonName.CompareTo(scoreRecord1.PersonName));
+            champions.Sort((scoreRecord1, scoreRecord2) => scoreRecord2.ScorePoints.CompareTo(scoreRecord1.ScorePoints));
+  
         }
         /// <summary>
         /// Method that prints the score on the scoreboard
-        /// </summary>
-        /// <param name="topRecords">List with the players' scores</param>
+        /// </summary>      /// <param name="topRecords">List with the players' scores</param>
+  
         internal static string PrintScoreBoard(List<ScoreRecord> topRecords)
         {
             StringBuilder result = new StringBuilder();
@@ -264,8 +264,8 @@ namespace Minesweeper
             if (topRecords.Count > 0)
             {
                 for (int i = 0; i < topRecords.Count; i++)
-                {
-                    result.AppendFormat("{0}. {1} --> {2} cells\n", i + 1, topRecords[i].PersonName, topRecords[i].ScorePoints);
+                {                  result.AppendFormat("{0}. {1} --> {2} cells\n", i + 1, topRecords[i].PersonName, topRecords[i].ScorePoints);
+  
                 }
                 result.AppendLine();
             }
@@ -278,10 +278,8 @@ namespace Minesweeper
             return result.ToString();
         }
         #endregion
-        /// <summary>
-        /// Game boards generating methods region
-        /// </summary>
-
+        
+        
         #region  WhiteBoard and MinesBoard Generating and Calculating
         /// <summary>
         /// Method that creates an empty game board
@@ -310,8 +308,8 @@ namespace Minesweeper
         /// <param name="rows">Number of rows</param>
         /// <param name="cols">Number of columns</param>
         /// <param name="minesCount">Number of mines</param>
-        /// <returns>Char array as a game board with mines</returns>
-        internal static char[,] CreateMinesBoard(int rows, int cols, int minesCount)
+        /// <returns>Char array as a game board with mines</returns>      internal static char[,] CreateMinesBoard(int rows, int cols, int minesCount)
+  
         {
             int boardRows = rows;
             int boardColumns = cols;
@@ -335,8 +333,8 @@ namespace Minesweeper
         /// Method that randomly places the mines. 
         /// </summary>
         /// <param name="board">Empty game board</param>
-        /// <param name="randomNumbers">List of random numbers</param>
-        internal static void PlaceMinesRandom(char[,] board, List<int> randomNumbers)
+        /// <param name="randomNumbers">List of random numbers</param>      internal static void PlaceMinesRandom(char[,] board, List<int> randomNumbers)
+  
         {
             int boardColumns = board.GetLength(1);
 
@@ -400,14 +398,14 @@ namespace Minesweeper
             }
         }
 
-        /// <summary>
-        /// Method that returns the number of mines in neighbouring cells
+        /// <summary>      /// Method that returns the number of mines in neighbouring cells
+  
         /// </summary>
         /// <param name="board">Current game board</param>
         /// <param name="rowIndex">Row index of the cell</param>
         /// <param name="columnIndex">Column index of the cell</param>
-        /// <returns>Number of mines in neighbouring cells</returns>
-        internal static char CountMinesAroundCell(char[,] board, int rowIndex, int columnIndex)
+        /// <returns>Number of mines in neighbouring cells</returns>      internal static char CountMinesAroundCell(char[,] board, int rowIndex, int columnIndex)
+  
         {
             int minesCount = 0;
             int boardRows = board.GetLength(0);
