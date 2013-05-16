@@ -34,9 +34,6 @@ namespace Minesweeper
             {
                 if (newGame)
                 {
-                    ///<summary>
-                    /// Starts a new game 
-                    ///</summary>
                     Console.WriteLine("Welcome to the game “Minesweeper”. Try to reveal all cells without mines." +
                     " Use 'top' to view the scoreboard, 'restart' to start a new game and 'exit' to quit the game.");
                     PrintBoard(whiteBoard);
@@ -45,37 +42,18 @@ namespace Minesweeper
 
                 Console.Write("Enter row and column: ");
                 selectedCommand = Console.ReadLine().Trim();
-
-                ///<summary>
-                /// Try catch block that uses the char array "separator" 
-                /// for separating row and col in the command line
-                ///</summary>
-                if (selectedCommand.Length >= 3)
+                var commandSplit = selectedCommand.Split(separators, StringSplitOptions.RemoveEmptyEntries);
+                if (commandSplit.Length > 1)
                 {
-                    try
+                    rowIndex = int.Parse(commandSplit[0]);
+                    colIndex = int.Parse(commandSplit[1]);
+
+                    bool validRowIndex = IsInsideBoard(rowIndex, BoardRows);
+                    bool validColIndex = IsInsideBoard(colIndex, BoardCols);
+
+                    if (validRowIndex && validColIndex)
                     {
-                        string[] commandSplit = selectedCommand.Split(separators, StringSplitOptions.RemoveEmptyEntries);
-                        rowIndex = int.Parse(commandSplit[0]);
-                        colIndex = int.Parse(commandSplit[1]);
-
-                        bool validRowIndex = IsInsideBoard(rowIndex, BoardRows);
-                        bool validColIndex = IsInsideBoard(colIndex, BoardCols);
-
-                        if (validRowIndex && validColIndex)
-                        {
-                            selectedCommand = "turn";
-                        }
-
-                    }
-
-                 ///<exeption cref="System.Exception">
-                 /// Thrown when wrong format exception occures. The format exception will be handled as
-                 /// an illgal move in the switch case.
-                 ///</exception>
-
-                    catch (FormatException ex)
-                    {
-                
+                        selectedCommand = "turn";
                     }
                 }
 
@@ -140,6 +118,7 @@ namespace Minesweeper
                             break;
                         }
                 }
+
                 if (mineHasBlown || maxRevealedCellsReached)
                 {
                     if (mineHasBlown)
@@ -166,7 +145,7 @@ namespace Minesweeper
                     mineHasBlown = false;
                     newGame = true;
                 }
-            } while (selectedCommand != "exit");
+            }while (selectedCommand != "exit");
 
             Console.WriteLine("Made by Pavlin Panev 2010 - all rights reserved!");
             Console.WriteLine("Press any key to exit.");

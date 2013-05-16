@@ -2,6 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Minesweeper;
 using System.Collections.Generic;
+using System.IO;
 
 namespace MinesweeperTest
 {
@@ -72,6 +73,39 @@ namespace MinesweeperTest
             Assert.AreEqual<string>(
                 "\nScoreboard:\r\nNo records to display!\n\r\n",
                 result);
+        }
+
+        [TestMethod]
+        public void TestMain_Input_Exit()
+        {
+            StringReader strReader = new StringReader("exit\n");
+            Console.SetIn(strReader);
+            StringWriter consoleOutput = new StringWriter();
+            Console.SetOut(consoleOutput);
+            string[] arguments = null;
+            MinesweeperMain.Main(arguments);
+
+            string output = consoleOutput.ToString();
+            string expected = "Welcome to the game “Minesweeper”. Try to reveal all cells without mines. Use 'top' to view the scoreboard, 'restart' to start a new game and 'exit' to quit the game.\r\n\n    0 1 2 3 4 5 6 7 8 9\r\n   ---------------------\r\n0 | ? ? ? ? ? ? ? ? ? ? |\r\n1 | ? ? ? ? ? ? ? ? ? ? |\r\n2 | ? ? ? ? ? ? ? ? ? ? |\r\n3 | ? ? ? ? ? ? ? ? ? ? |\r\n4 | ? ? ? ? ? ? ? ? ? ? |\r\n   ---------------------\n\r\nEnter row and column: Good bye!\r\nMade by Pavlin Panev 2010 - all rights reserved!\r\nPress any key to exit.\r\n";
+
+            Assert.AreEqual(expected, output);
+        }
+
+        [TestMethod]
+        public void TestMain_Input_Restart()
+        {
+            StringReader strReader = new StringReader("restart\nexit\n");
+            Console.SetIn(strReader);
+            StringWriter consoleOutput = new StringWriter();
+            Console.SetOut(consoleOutput);
+            string[] arguments = null;
+            MinesweeperMain.Main(arguments);
+
+            string output = consoleOutput.ToString();
+            string expected = 
+                "Welcome to the game “Minesweeper”. Try to reveal all cells without mines. Use 'top' to view the scoreboard, 'restart' to start a new game and 'exit' to quit the game.\r\n\n    0 1 2 3 4 5 6 7 8 9\r\n   ---------------------\r\n0 | ? ? ? ? ? ? ? ? ? ? |\r\n1 | ? ? ? ? ? ? ? ? ? ? |\r\n2 | ? ? ? ? ? ? ? ? ? ? |\r\n3 | ? ? ? ? ? ? ? ? ? ? |\r\n4 | ? ? ? ? ? ? ? ? ? ? |\r\n   ---------------------\n\r\nEnter row and column: \n    0 1 2 3 4 5 6 7 8 9\r\n   ---------------------\r\n0 | ? ? ? ? ? ? ? ? ? ? |\r\n1 | ? ? ? ? ? ? ? ? ? ? |\r\n2 | ? ? ? ? ? ? ? ? ? ? |\r\n3 | ? ? ? ? ? ? ? ? ? ? |\r\n4 | ? ? ? ? ? ? ? ? ? ? |\r\n   ---------------------\n\r\nEnter row and column: Good bye!\r\nMade by Pavlin Panev 2010 - all rights reserved!\r\nPress any key to exit.\r\n";
+
+            Assert.AreEqual(expected, output);
         }
     }
 }
